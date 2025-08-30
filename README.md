@@ -1,31 +1,51 @@
-# Spam Classifier - ML & NLP Flask Application
+# 🚀 Spam Classifier - ML & NLP Flask Application
 
-A modern, responsive web application for spam classification using Machine Learning and Natural Language Processing techniques.
+[![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.0+-orange.svg)](https://scikit-learn.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-brightgreen.svg)](https://github.com/Riznxz/Spam-Classifier)
 
-## Features
+A modern, responsive web application for spam classification using Machine Learning and Natural Language Processing techniques. Built with Flask, scikit-learn, and NLTK.
 
-- **Real-time Text Classification**: Instantly classify text as spam or legitimate
-- **Advanced ML Algorithms**: Uses Multinomial Naive Bayes with TF-IDF vectorization
-- **NLP Preprocessing**: Text preprocessing with lemmatization and stop word removal
-- **Modern UI**: Beautiful, responsive design with gradient backgrounds and animations
-- **Custom Training**: Train the model with your own dataset
-- **Confidence Scores**: Get detailed probability distributions and confidence levels
-- **Sample Examples**: Pre-loaded examples to test the system
+## ✨ Features
 
-## Technology Stack
+- 🔍 **Real-time Text Classification**: Instantly classify text as spam or legitimate
+- 🤖 **Advanced ML Algorithms**: Uses Multinomial Naive Bayes with TF-IDF vectorization
+- 📝 **NLP Preprocessing**: Text preprocessing with lemmatization and stop word removal
+- 🎨 **Modern UI**: Beautiful, responsive design with gradient backgrounds and animations
+- 🎯 **Custom Training**: Train the model with your own dataset
+- 📊 **Confidence Scores**: Get detailed probability distributions and confidence levels
+- 📋 **Sample Examples**: Pre-loaded examples to test the system
+- 📱 **Mobile Responsive**: Works perfectly on all devices
 
-- **Backend**: Flask (Python)
-- **Machine Learning**: scikit-learn, NLTK
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Styling**: Modern CSS with gradients, animations, and responsive design
-- **Icons**: Font Awesome
-- **Fonts**: Inter (Google Fonts)
+## 🛠️ Technology Stack
 
-## Installation
+### Backend
+- **Flask** - Web framework
+- **scikit-learn** - Machine learning algorithms
+- **NLTK** - Natural language processing
+- **NumPy/Pandas** - Data manipulation
 
-1. **Clone or navigate to the project directory:**
+### Frontend
+- **HTML5** - Structure
+- **CSS3** - Modern styling with gradients and animations
+- **JavaScript** - Interactive functionality
+- **Font Awesome** - Icons
+- **Google Fonts** - Typography
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.7 or higher
+- pip (Python package installer)
+
+### Installation
+
+1. **Clone the repository:**
    ```bash
-   cd spam_classifier
+   git clone https://github.com/Riznxz/Spam-Classifier.git
+   cd Spam-Classifier
    ```
 
 2. **Create a virtual environment (recommended):**
@@ -54,7 +74,20 @@ A modern, responsive web application for spam classification using Machine Learn
    http://localhost:5000
    ```
 
-## Usage
+### Alternative: One-Click Setup
+
+**Windows:**
+```bash
+run.bat
+```
+
+**Linux/macOS:**
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+## 📖 Usage
 
 ### Text Classification
 1. Enter or paste text in the "Text Classification" section
@@ -68,14 +101,32 @@ A modern, responsive web application for spam classification using Machine Learn
 3. Click "Train Model" to improve the classifier with your data
 4. Minimum 10 samples required for training
 
-## API Endpoints
+## 🔌 API Endpoints
 
-- `GET /` - Main application page
-- `POST /classify` - Classify text as spam/not spam
-- `POST /train` - Train the model with custom data
-- `GET /stats` - Get model statistics
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Main application page |
+| `/classify` | POST | Classify text as spam/not spam |
+| `/train` | POST | Train the model with custom data |
+| `/stats` | GET | Get model statistics |
 
-## Model Details
+### API Usage Examples
+
+**Classify Text:**
+```bash
+curl -X POST http://localhost:5000/classify \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Your text to classify"}'
+```
+
+**Train Model:**
+```bash
+curl -X POST http://localhost:5000/train \
+  -H "Content-Type: application/json" \
+  -d '{"texts": ["text1", "text2"], "labels": [0, 1]}'
+```
+
+## 🤖 Model Details
 
 - **Algorithm**: Multinomial Naive Bayes
 - **Vectorization**: TF-IDF (Term Frequency-Inverse Document Frequency)
@@ -87,11 +138,33 @@ A modern, responsive web application for spam classification using Machine Learn
   - Stop word removal
   - Lemmatization
 
-## Sample Data
+## 📁 Project Structure
 
-The application comes pre-trained with sample spam and legitimate messages. You can replace this with your own dataset for better performance.
+```
+spam_classifier/
+├── app.py                 # Main Flask application with ML logic
+├── run.py                 # Python script to run the application
+├── run.bat                # Windows batch file for easy execution
+├── run.sh                 # Unix/Linux/macOS shell script
+├── requirements.txt       # Python dependencies
+├── README.md             # Comprehensive documentation
+├── PROJECT_STRUCTURE.md  # Detailed project structure
+└── templates/
+    └── index.html        # Modern, responsive UI template
+```
 
-## Customization
+## ⚡ Performance
+
+- **Training Time**: ~1-2 seconds for 1000 samples
+- **Classification Time**: <100ms per text
+- **Memory Usage**: ~50MB for the model
+- **Accuracy**: Varies based on training data quality
+
+## 🎨 Screenshots
+
+*[Add screenshots of your application here]*
+
+## 🔧 Customization
 
 ### Adding More Training Data
 Edit the `sample_data` dictionary in `app.py` to include more training examples:
@@ -120,46 +193,64 @@ from sklearn.ensemble import RandomForestClassifier
 self.classifier = LogisticRegression()  # or other classifier
 ```
 
-## File Structure
-
-```
-spam_classifier/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── README.md             # This file
-└── templates/
-    └── index.html        # Main UI template
-```
-
-## Performance
-
-- **Training Time**: ~1-2 seconds for 1000 samples
-- **Classification Time**: <100ms per text
-- **Memory Usage**: ~50MB for the model
-- **Accuracy**: Varies based on training data quality
-
-## Browser Compatibility
+## 🌐 Browser Compatibility
 
 - Chrome 60+
 - Firefox 55+
 - Safari 12+
 - Edge 79+
 
-## Contributing
+## 🤝 Contributing
 
-Feel free to contribute to this project by:
+We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+### How to Contribute
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Areas for Contribution
 - Adding new ML algorithms
 - Improving the UI/UX
 - Adding more preprocessing techniques
 - Enhancing the API endpoints
+- Adding unit tests
+- Improving documentation
 
-## License
+## 📄 License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
+## 🐛 Known Issues
 
-If you encounter any issues or have questions, please check the console for error messages or create an issue in the project repository.
+- None currently reported
+
+## 🔮 Future Enhancements
+
+- [ ] Add support for multiple languages
+- [ ] Implement deep learning models
+- [ ] Add email integration
+- [ ] Create mobile app version
+- [ ] Add user authentication
+- [ ] Implement model versioning
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+1. Check the console for error messages
+2. Review the [Issues](https://github.com/Riznxz/Spam-Classifier/issues) page
+3. Create a new issue with detailed information
+4. Contact: riznxz@gmail.com
+
+## 🙏 Acknowledgments
+
+- [scikit-learn](https://scikit-learn.org/) for machine learning algorithms
+- [NLTK](https://www.nltk.org/) for natural language processing
+- [Flask](https://flask.palletsprojects.com/) for the web framework
+- [Font Awesome](https://fontawesome.com/) for icons
 
 ---
 
@@ -169,4 +260,8 @@ If you encounter any issues or have questions, please check the console for erro
 - Using a production WSGI server (Gunicorn)
 - Adding logging and monitoring
 - Implementing proper error handling
-- Using environment variables for configuration 
+- Using environment variables for configuration
+
+---
+
+⭐ **Star this repository if you found it helpful!** 
