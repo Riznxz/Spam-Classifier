@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Classifier - ML & NLP</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 i {
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .result-icon.spam {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .result-icon.ham {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+        }
+
+        .result-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .result-text p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .confidence-bar {
+            background: #f1f3f4;
+            border-radius: 10px;
+            height: 20px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .confidence-fill.spam {
+            background: linear-gradient(90deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .confidence-fill.ham {
+            background: linear-gradient(90deg, #51cf66 0%, #40c057 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sample-texts {
+            margin-top: 20px;
+        }
+
+        .sample-text {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .sample-text:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .sample-text.spam {
+            border-left-color: #ff6b6b;
+        }
+
+        .sample-text.ham {
+            border-left-color: #51cf66;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-alt"></i> Spam Classifier</h1>
+            <p>Advanced ML & NLP-powered spam detection system</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2><i class="fas fa-search"></i> Text Classification</h2>
+                <div id="alert" class="alert"></div>
+                
+                <form id="classifyForm">
+                    <div class="form-group">
+                        <label for="textInput">Enter text to classify:</label>
+                        <textarea id="textInput" class="form-control" placeholder="Paste or type your text here..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-magic"></i> Classify Text
+                    </button>
+                </form>
+
+                <div class="sample-texts">
+                    <h4 style="margin-bottom: 15px; color: #666;">Try these examples:</h4>
+                    <div class="sample-text spam" onclick="loadSample('URGENT! You have won a 1 week FREE membership in our £100,000 prize Jackpot! Txt the word: CLAIM to No: 81010 T&C www.dbuk.net')">
+                        <strong>Spam:</strong> URGENT! You have won a 1 week FREE membership...
+                    </div>
+                    <div class="sample-text ham" onclick="loadSample('Hi Tom, how are you doing?')">
+                        <strong>Not Spam:</strong> Hi Tom, how are you doing?
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-chart-line"></i> Model Training</h2>
+                <p style="color: #666; margin-bottom: 20px;">Train the model with your own data for better accuracy.</p>
+                
+                <div class="form-group">
+                    <label for="trainingTexts">Training texts (one per line):</label>
+                    <textarea id="trainingTexts" class="form-control" placeholder="Enter training texts here..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="trainingLabels">Labels (0 for ham, 1 for spam, comma-separated):</label>
+                    <input type="text" id="trainingLabels" class="form-control" placeholder="0,1,0,1,0...">
+                </div>
+                
+                <button onclick="trainModel()" class="btn btn-secondary">
+                    <i class="fas fa-brain"></i> Train Model
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-header">
+                <div class="result-icon" id="resultIcon">
+                    <i class="fas fa-question"></i>
+                </div>
+                <div class="result-text">
+                    <h3 id="resultTitle">Classification Result</h3>
+                    <p id="resultSubtitle">Analyzing your text...</p>
+                </div>
+            </div>
+            
+            <div class="confidence-bar">
+                <div class="confidence-fill" id="confidenceFill"></div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="confidenceValue">0%</div>
+                    <div class="stat-label">Confidence</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="spamProb">0%</div>
+                    <div class="stat-label">Spam Probability</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-robot"></i>
+                <h3>Machine Learning</h3>
+                <p>Powered by advanced ML algorithms including Naive Bayes and TF-IDF vectorization</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-language"></i>
+                <h3>Natural Language Processing</h3>
+                <p>Advanced text preprocessing with lemmatization and stop word removal</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Real-time Analysis</h3>
+                <p>Instant classification with confidence scores and probability distributions</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-cogs"></i>
+                <h3>Custom Training</h3>
+                <p>Train the model with your own dataset for improved accuracy</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function loadSample(text) {
+            document.getElementById('textInput').value = text;
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultCard').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function displayResult(data) {
+            const resultCard = document.getElementById('resultCard');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultSubtitle = document.getElementById('resultSubtitle');
+            const confidenceFill = document.getElementById('confidenceFill');
+            const confidenceValue = document.getElementById('confidenceValue');
+            const spamProb = document.getElementById('spamProb');
+
+            // Set result
+            resultTitle.textContent = data.result.prediction;
+            resultSubtitle.textContent = `Analyzed: "${data.text.substring(0, 50)}${data.text.length > 50 ? '...' : ''}"`;
+            
+            // Set icon and colors
+            if (data.result.prediction === 'Spam') {
+                resultIcon.className = 'result-icon spam';
+                resultIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                confidenceFill.className = 'confidence-fill spam';
+            } else {
+                resultIcon.className = 'result-icon ham';
+                resultIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                confidenceFill.className = 'confidence-fill ham';
+            }
+
+            // Set values
+            confidenceValue.textContent = `${data.result.confidence.toFixed(1)}%`;
+            spamProb.textContent = `${data.result.spam_probability.toFixed(1)}%`;
+            
+            // Animate confidence bar
+            setTimeout(() => {
+                confidenceFill.style.width = `${data.result.confidence}%`;
+            }, 100);
+
+            resultCard.style.display = 'block';
+        }
+
+        document.getElementById('classifyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) {
+                showAlert('Please enter some text to classify', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch('/classify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                const data = await response.json();
+                hideLoading();
+
+                if (data.success) {
+                    displayResult(data);
+                } else {
+                    showAlert(data.error || 'Classification failed', 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showAlert('Network error. Please try again.', 'error');
+            }
+        });
+
+        async function trainModel() {
+            const texts = document.getElementById('trainingTexts').value.trim();
+            const labels = document.getElementById('trainingLabels').value.trim();
+
+            if (!texts || !labels) {
+                showAlert('Please provide both training texts and labels', 'error');
+                return;
+            }
+
+            const textArray = texts.split('\n').filter(t => t.trim());
+            const labelArray = labels.split(',').map(l => parseInt(l.trim()));
+
+            if (textArray.length !== labelArray.length) {
+                showAlert('Number of texts and labels must match', 'error');
+                return;
+            }
+
+            if (textArray.length < 10) {
+                showAlert('Please provide at least 10 training samples', 'error');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch('/train', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        texts: textArray,
+                        labels: labelArray
+                    })
+                });
+
+                const data = await response.json();
+                hideLoading();
+
+                if (data.success) {
+                    showAlert(`Model trained successfully! Accuracy: ${(data.accuracy * 100).toFixed(1)}%`);
+                } else {
+                    showAlert(data.error || 'Training failed', 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showAlert('Network error. Please try again.', 'error');
+            }
+        }
+
+        // Load model stats on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/stats');
+                const stats = await response.json();
+                console.log('Model stats:', stats);
+            } catch (error) {
+                console.log('Could not load model stats');
+            }
+        });
+    </script>
+</body>
+</html> 
